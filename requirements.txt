@@ -1,0 +1,12 @@
+# Python dependencies for scanner.py and orchestrator.py.
+# See README.md for the EXTERNAL tools this project also uses (nmap,
+# Wapiti, webtech, CMSeeK) — those are separate installs, not pip packages
+# installable from this file alone, except where noted below.
+
+requests>=2.28.0
+
+# --- Installed via pip but are separate CLI tools, not imported ---
+# webtech>=1.4.0        # pip install webtech  (passive tech fingerprinting)
+# wapiti3>=3.1.0        # pip install wapiti3   (see README for a known
+#                        # Windows build issue with its cffi/zstandard deps
+#                        # and the workaround)

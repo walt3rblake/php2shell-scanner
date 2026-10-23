@@ -1,0 +1,21 @@
+# Real target lists and scan results — never commit these. They can
+# contain live client/target data and vulnerability findings.
+urls.txt
+report*.json
+*.report.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# CMSeeK's own per-target result dumps, if cloned alongside this repo
+CMSeeK/Result/
+
+# Wapiti's session/report state
+.wapiti/
+
+# OS noise
+.DS_Store
+Thumbs.db

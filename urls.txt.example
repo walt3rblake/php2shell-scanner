@@ -1,0 +1,14 @@
+# CVE-2026-109618 / CVE-2026-109619 target list
+#
+# One target per line. Lines starting with # and blank lines are ignored.
+# Bare domains (no scheme) are assumed https:// automatically.
+#
+# Copy this file to urls.txt and replace the examples below with your
+# real targets. urls.txt is git-ignored on purpose (see .gitignore) so you
+# never accidentally commit a real target list.
+#
+# Only list hosts you own or are explicitly authorized to test.
+
+https://example.com
+https://www.example.org
+example.net
