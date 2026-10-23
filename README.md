@@ -170,6 +170,55 @@ Run `python orchestrator.py --help` — the pre-flight check it prints
 first will tell you exactly which tools it found and which env var to set
 for any it didn't.
 
+### Linux quickstart example
+The path-resolution logic itself needs no Linux-specific code (the
+Windows fallback paths are explicitly gated out on other platforms, and
+`PATH` lookup works the same everywhere) — but two real Linux-specific
+gotchas are worth calling out up front:
+
+1. **Newer Debian/Ubuntu (PEP 668) reject a bare `pip install`** outside
+   a virtual environment ("externally managed environment" error). Use a
+   venv, as below.
+2. **nmap's `scripts/` directory is root-owned** on a typical Linux
+   install, same as `Program Files` is on Windows — installing the
+   optional `vulners`/`vulscan` NSE scripts needs `sudo`.
+
+```bash
+# 1. System packages
+sudo apt update && sudo apt install -y nmap python3 python3-venv git
+
+# 2. Python deps in a venv — this also puts wapiti/webtech on PATH
+#    automatically once activated, no env var needed for those two
+python3 -m venv ~/.venvs/php2shell
+source ~/.venvs/php2shell/bin/activate
+pip install -r requirements.txt
+pip install webtech wapiti3
+
+# 3. CMSeeK — not pip-installable, clone it and point the scanner at it
+git clone https://github.com/Tuhinshubhra/CMSeeK ~/tools/CMSeeK
+pip install -r ~/tools/CMSeeK/requirements.txt
+export PHP2SHELL_CMSEEK_PATH="$HOME/tools/CMSeeK/cmseek.py"
+
+# 4. Optional: vulners/vulscan NSE scripts (needs sudo; skip this step
+#    entirely and the scanner just runs nmap without them — see "Info-
+#    gathering + CVE-correlation scripts" note in orchestrator.py)
+sudo git clone https://github.com/vulnersCom/nmap-vulners.git /usr/share/nmap/scripts/vulners
+sudo git clone https://github.com/scipag/vulscan.git /usr/share/nmap/scripts/vulscan
+sudo nmap --script-updatedb
+export PHP2SHELL_VULSCAN_NSE_PATH="/usr/share/nmap/scripts/vulscan/vulscan.nse"
+
+# 5. Run it (re-activate the venv in any new shell session first)
+source ~/.venvs/php2shell/bin/activate
+cp urls.txt.example urls.txt   # then edit with your real, authorized targets
+python orchestrator.py urls.txt --json report.json
+```
+
+Only `PHP2SHELL_CMSEEK_PATH` and (optionally) `PHP2SHELL_VULSCAN_NSE_PATH`
+need setting here — `nmap`, `wapiti`, and `webtech` all resolve
+automatically via `PATH` once installed this way. Add the `export` lines
+to your shell profile (`~/.bashrc`/`~/.zshrc`) if you don't want to
+re-export them every session.
+
 ## Usage
 
 ```bash
