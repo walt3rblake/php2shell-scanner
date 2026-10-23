@@ -10,16 +10,6 @@ It does that by running six independent, well-known detection tools
 against each target and cross-checking their answers against each other,
 instead of trusting any single banner grab.
 
-> **Status:** built and tested against live and synthetic targets while
-> triaging a real client list. This is the most complete open detection
-> tool for this specific CVE pair that I could find at the time of
-> writing — most of what else exists for "php2shell" (the bug's informal
-> nickname) is either a full exploit chain, or an unverified repo from an
-> anonymous account published within days of disclosure. Neither is what
-> most defenders need. This is.
-
----
-
 ## ⚠️ Disclaimer — read this first
 
 **This tool is for authorized security testing and defensive research
@@ -69,7 +59,7 @@ what catches that kind of mistake before it reaches a client report.
 flowchart TD
     A["urls.txt<br/>(one target per line)"] --> B["orchestrator.py<br/>strictly sequential, one target at a time"]
 
-    subgraph Detection layers — all read-only / passive
+    subgraph DetectionLayers["Detection layers (all read-only / passive)"]
         direction LR
         C1["scanner.py<br/>headers + 404 page + optional phpinfo probe"]
         C2["webtech<br/>Wappalyzer-DB fingerprint"]
