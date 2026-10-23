@@ -1,0 +1,51 @@
+flowchart TD
+    A["urls.txt<br/>(one target per line)"] --> B["orchestrator.py<br/>strictly sequential, one target at a time"]
+
+    subgraph DetectionLayers["Detection layers (all read-only / passive)"]
+        direction LR
+        C1["scanner.py<br/>headers + 404 page + optional phpinfo probe"]
+        C2["webtech<br/>Wappalyzer-DB fingerprint"]
+        C3["wapiti --wapp module<br/>(fingerprint only, never its attack modules)"]
+        C4["nmap -sV<br/>service/version detection"]
+        C5["nmap + vulners/vulscan NSE<br/>CVE correlation"]
+        C6["cmseek --light-scan<br/>CMS identification"]
+    end
+
+    B --> C1
+    B --> C2
+    B --> C3
+    B --> C4
+    B --> C5
+    B --> C6
+
+    C1 --> D["reconcile()<br/>cross-check every tool's answer"]
+    C2 --> D
+    C3 --> D
+    C4 --> D
+    C5 --> D
+    C6 --> D
+
+    D --> E{What did the<br/>tools agree on?}
+
+    E -->|"all agree on a PHP version"| F["VULNERABLE / PATCHED /<br/>EOL_UNPATCHED"]
+    E -->|"tools disagree"| G["UNKNOWN<br/>(DISAGREE — needs manual check)"]
+    E -->|"PHP implied (e.g. WordPress),<br/>version hidden"| H["UNKNOWN<br/>(PHP_DETECTED_VERSION_HIDDEN<br/>+ SAPI risk-priority triage)"]
+    E -->|"a DIFFERENT backend<br/>confirmed (ASP.NET, Rails...)"| I["NOT_PHP"]
+    E -->|"nothing conclusive<br/>(CDN/analytics noise only)"| J["UNKNOWN<br/>(NO_BACKEND_SIGNAL)"]
+
+    F --> K["client_summary (plain English)<br/>+ report.json (full detail)"]
+    G --> K
+    H --> K
+    I --> K
+    J --> K
+
+    style A fill:#2d3748,color:#fff
+    style B fill:#2b6cb0,color:#fff
+    style D fill:#2b6cb0,color:#fff
+    style E fill:#744210,color:#fff
+    style F fill:#276749,color:#fff
+    style I fill:#276749,color:#fff
+    style G fill:#9c4221,color:#fff
+    style H fill:#9c4221,color:#fff
+    style J fill:#9c4221,color:#fff
+    style K fill:#2d3748,color:#fff
