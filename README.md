@@ -57,8 +57,6 @@ what catches that kind of mistake before it reaches a client report.
 
 ![Architecture diagram](architecture.png)
 
-<sub>Rendered as a static image rather than a live Mermaid block, since Mermaid rendering is inconsistent across GitHub clients (the mobile app in particular often doesn't render it at all). Source is in [architecture.mmd](architecture.mmd) if you want to edit and re-render it.</sub>
-
 ## Features
 
 - **Six independent detection layers**, cross-checked against each other
